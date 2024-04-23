@@ -1,8 +1,8 @@
-## t-rex-runner
+## Dino-Run game
 
-the trex runner game
+The Chrome Dino game
 
-[go and enjoy! :smile: ](http://url/)
+[play live now!!! :smile: ](http://url/)
 
 ![chrome offline game cast](assets/screenshot.gif)
 ------------------------------------------------------------
