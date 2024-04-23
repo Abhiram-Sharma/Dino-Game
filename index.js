@@ -1,11 +1,11 @@
 // Copyright (c) 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// extract from chromium source code by @liuwayong
+// extracted from chromium source code
 (function () {
     'use strict';
     /**
-     * T-Rex runner.
+     * Dino-Run.
      * @param {string} outerContainerId Outer containing element id.
      * @param {Object} opt_config
      * @constructor
@@ -30,7 +30,7 @@
         this.canvas = null;
         this.canvasCtx = null;
 
-        this.tRex = null;
+        this.Dino = null;
 
         this.distanceMeter = null;
         this.distanceRan = 0;
@@ -170,7 +170,7 @@
             PTERODACTYL: { x: 134, y: 2 },
             RESTART: { x: 2, y: 2 },
             TEXT_SPRITE: { x: 655, y: 2 },
-            TREX: { x: 848, y: 2 },
+            Dino: { x: 848, y: 2 },
             STAR: { x: 645, y: 2 }
         },
         HDPI: {
@@ -182,7 +182,7 @@
             PTERODACTYL: { x: 260, y: 2 },
             RESTART: { x: 2, y: 2 },
             TEXT_SPRITE: { x: 1294, y: 2 },
-            TREX: { x: 1678, y: 2 },
+            Dino: { x: 1678, y: 2 },
             STAR: { x: 1276, y: 2 }
         }
     };
@@ -272,10 +272,10 @@
                     case 'GRAVITY':
                     case 'MIN_JUMP_HEIGHT':
                     case 'SPEED_DROP_COEFFICIENT':
-                        this.tRex.config[setting] = value;
+                        this.Dino.config[setting] = value;
                         break;
                     case 'INITIAL_JUMP_VELOCITY':
-                        this.tRex.setJumpVelocity(value);
+                        this.Dino.setJumpVelocity(value);
                         break;
                     case 'SPEED':
                         this.setSpeed(value);
@@ -379,7 +379,7 @@
                 this.spriteDef.TEXT_SPRITE, this.dimensions.WIDTH);
 
             // Draw t-rex
-            this.tRex = new Trex(this.canvas, this.spriteDef.TREX);
+            this.Dino = new Dino(this.canvas, this.spriteDef.Dino);
 
             this.outerContainerEl.appendChild(this.containerEl);
 
@@ -440,7 +440,7 @@
                 this.distanceMeter.calcXPos(this.dimensions.WIDTH);
                 this.clearCanvas();
                 this.horizon.update(0, 0, true);
-                this.tRex.update(0);
+                this.Dino.update(0);
 
                 // Outer container and distance meter.
                 if (this.playing || this.crashed || this.paused) {
@@ -449,7 +449,7 @@
                     this.distanceMeter.update(0, Math.ceil(this.distanceRan));
                     this.stop();
                 } else {
-                    this.tRex.draw(0, 0);
+                    this.Dino.draw(0, 0);
                 }
 
                 // Game over panel.
@@ -467,11 +467,11 @@
         playIntro: function () {
             if (!this.activated && !this.crashed) {
                 this.playingIntro = true;
-                this.tRex.playingIntro = true;
+                this.Dino.playingIntro = true;
 
                 // CSS animation definition.
                 var keyframes = '@-webkit-keyframes intro { ' +
-                    'from { width:' + Trex.config.WIDTH + 'px }' +
+                    'from { width:' + Dino.config.WIDTH + 'px }' +
                     'to { width: ' + this.dimensions.WIDTH + 'px }' +
                     '}';
                 
@@ -505,7 +505,7 @@
             this.setArcadeMode();
             this.runningTime = 0;
             this.playingIntro = false;
-            this.tRex.playingIntro = false;
+            this.Dino.playingIntro = false;
             this.containerEl.style.webkitAnimation = '';
             this.playCount++;
 
@@ -538,15 +538,15 @@
             if (this.playing) {
                 this.clearCanvas();
 
-                if (this.tRex.jumping) {
-                    this.tRex.updateJump(deltaTime);
+                if (this.Dino.jumping) {
+                    this.Dino.updateJump(deltaTime);
                 }
 
                 this.runningTime += deltaTime;
                 var hasObstacles = this.runningTime > this.config.CLEAR_TIME;
 
                 // First jump triggers the intro.
-                if (this.tRex.jumpCount == 1 && !this.playingIntro) {
+                if (this.Dino.jumpCount == 1 && !this.playingIntro) {
                     this.playIntro();
                 }
 
@@ -561,7 +561,7 @@
 
                 // Check for collisions.
                 var collision = hasObstacles &&
-                    checkForCollision(this.horizon.obstacles[0], this.tRex);
+                    checkForCollision(this.horizon.obstacles[0], this.Dino);
 
                 if (!collision) {
                     this.distanceRan += this.currentSpeed * deltaTime / this.msPerFrame;
@@ -604,8 +604,8 @@
             }
 
             if (this.playing || (!this.activated &&
-                this.tRex.blinkCount < Runner.config.MAX_BLINK_COUNT)) {
-                this.tRex.update(deltaTime);
+                this.Dino.blinkCount < Runner.config.MAX_BLINK_COUNT)) {
+                this.Dino.update(deltaTime);
                 this.scheduleNextUpdate();
             }
         },
@@ -689,9 +689,9 @@
                         }
                     }
                     //  Play sound effect and jump on starting the game for the first time.
-                    if (!this.tRex.jumping && !this.tRex.ducking) {
+                    if (!this.Dino.jumping && !this.Dino.ducking) {
                         this.playSound(this.soundFx.BUTTON_PRESS);
-                        this.tRex.startJump(this.currentSpeed);
+                        this.Dino.startJump(this.currentSpeed);
                     }
                 }
 
@@ -703,12 +703,12 @@
 
             if (this.playing && !this.crashed && Runner.keycodes.DUCK[e.keyCode]) {
                 e.preventDefault();
-                if (this.tRex.jumping) {
+                if (this.Dino.jumping) {
                     // Speed drop, activated only when jump key is not pressed.
-                    this.tRex.setSpeedDrop();
-                } else if (!this.tRex.jumping && !this.tRex.ducking) {
+                    this.Dino.setSpeedDrop();
+                } else if (!this.Dino.jumping && !this.Dino.ducking) {
                     // Duck.
-                    this.tRex.setDuck(true);
+                    this.Dino.setDuck(true);
                 }
             }
         },
@@ -725,10 +725,10 @@
                 e.type == Runner.events.MOUSEDOWN;
 
             if (this.isRunning() && isjumpKey) {
-                this.tRex.endJump();
+                this.Dino.endJump();
             } else if (Runner.keycodes.DUCK[keyCode]) {
-                this.tRex.speedDrop = false;
-                this.tRex.setDuck(false);
+                this.Dino.speedDrop = false;
+                this.Dino.setDuck(false);
             } else if (this.crashed) {
                 // Check that enough time has elapsed before allowing jump key to restart.
                 var deltaTime = getTimeStamp() - this.time;
@@ -740,7 +740,7 @@
                 }
             } else if (this.paused && isjumpKey) {
                 // Reset the jump state
-                this.tRex.reset();
+                this.Dino.reset();
                 this.play();
             }
         },
@@ -785,7 +785,7 @@
             this.crashed = true;
             this.distanceMeter.acheivement = false;
 
-            this.tRex.update(100, Trex.status.CRASHED);
+            this.Dino.update(100, Dino.status.CRASHED);
 
             // Game over panel.
             if (!this.gameOverPanel) {
@@ -817,7 +817,7 @@
             if (!this.crashed) {
                 this.playing = true;
                 this.paused = false;
-                this.tRex.update(0, Trex.status.RUNNING);
+                this.Dino.update(0, Dino.status.RUNNING);
                 this.time = getTimeStamp();
                 this.update();
             }
@@ -836,7 +836,7 @@
                 this.clearCanvas();
                 this.distanceMeter.reset(this.highestScore);
                 this.horizon.reset();
-                this.tRex.reset();
+                this.Dino.reset();
                 this.playSound(this.soundFx.BUTTON_PRESS);
                 this.invert(true);
                 this.update();
@@ -880,7 +880,7 @@
                 document.visibilityState != 'visible') {
                 this.stop();
             } else if (!this.crashed) {
-                this.tRex.reset();
+                this.Dino.reset();
                 this.play();
             }
         },
@@ -1133,21 +1133,21 @@
     /**
      * Check for a collision.
      * @param {!Obstacle} obstacle
-     * @param {!Trex} tRex T-rex object.
+     * @param {!Dino} Dino T-rex object.
      * @param {HTMLCanvasContext} opt_canvasCtx Optional canvas context for drawing
      *    collision boxes.
      * @return {Array<CollisionBox>}
      */
-    function checkForCollision(obstacle, tRex, opt_canvasCtx) {
+    function checkForCollision(obstacle, Dino, opt_canvasCtx) {
         var obstacleBoxXPos = Runner.defaultDimensions.WIDTH + obstacle.xPos;
 
         // Adjustments are made to the bounding box as there is a 1 pixel white
         // border around the t-rex and obstacles.
-        var tRexBox = new CollisionBox(
-            tRex.xPos + 1,
-            tRex.yPos + 1,
-            tRex.config.WIDTH - 2,
-            tRex.config.HEIGHT - 2);
+        var DinoBox = new CollisionBox(
+            Dino.xPos + 1,
+            Dino.yPos + 1,
+            Dino.config.WIDTH - 2,
+            Dino.config.HEIGHT - 2);
 
         var obstacleBox = new CollisionBox(
             obstacle.xPos + 1,
@@ -1157,32 +1157,32 @@
 
         // Debug outer box
         if (opt_canvasCtx) {
-            drawCollisionBoxes(opt_canvasCtx, tRexBox, obstacleBox);
+            drawCollisionBoxes(opt_canvasCtx, DinoBox, obstacleBox);
         }
 
         // Simple outer bounds check.
-        if (boxCompare(tRexBox, obstacleBox)) {
+        if (boxCompare(DinoBox, obstacleBox)) {
             var collisionBoxes = obstacle.collisionBoxes;
-            var tRexCollisionBoxes = tRex.ducking ?
-                Trex.collisionBoxes.DUCKING : Trex.collisionBoxes.RUNNING;
+            var DinoCollisionBoxes = Dino.ducking ?
+                Dino.collisionBoxes.DUCKING : Dino.collisionBoxes.RUNNING;
 
             // Detailed axis aligned box check.
-            for (var t = 0; t < tRexCollisionBoxes.length; t++) {
+            for (var t = 0; t < DinoCollisionBoxes.length; t++) {
                 for (var i = 0; i < collisionBoxes.length; i++) {
                     // Adjust the box to actual positions.
-                    var adjTrexBox =
-                        createAdjustedCollisionBox(tRexCollisionBoxes[t], tRexBox);
+                    var adjDinoBox =
+                        createAdjustedCollisionBox(DinoCollisionBoxes[t], DinoBox);
                     var adjObstacleBox =
                         createAdjustedCollisionBox(collisionBoxes[i], obstacleBox);
-                    var crashed = boxCompare(adjTrexBox, adjObstacleBox);
+                    var crashed = boxCompare(adjDinoBox, adjObstacleBox);
 
                     // Draw boxes for debug.
                     if (opt_canvasCtx) {
-                        drawCollisionBoxes(opt_canvasCtx, adjTrexBox, adjObstacleBox);
+                        drawCollisionBoxes(opt_canvasCtx, adjDinoBox, adjObstacleBox);
                     }
 
                     if (crashed) {
-                        return [adjTrexBox, adjObstacleBox];
+                        return [adjDinoBox, adjObstacleBox];
                     }
                 }
             }
@@ -1209,10 +1209,10 @@
     /**
      * Draw the collision boxes for debug.
      */
-    function drawCollisionBoxes(canvasCtx, tRexBox, obstacleBox) {
+    function drawCollisionBoxes(canvasCtx, DinoBox, obstacleBox) {
         canvasCtx.save();
         canvasCtx.strokeStyle = '#f00';
-        canvasCtx.strokeRect(tRexBox.x, tRexBox.y, tRexBox.width, tRexBox.height);
+        canvasCtx.strokeRect(DinoBox.x, DinoBox.y, DinoBox.width, DinoBox.height);
 
         canvasCtx.strokeStyle = '#0f0';
         canvasCtx.strokeRect(obstacleBox.x, obstacleBox.y,
@@ -1223,23 +1223,23 @@
 
     /**
      * Compare two collision boxes for a collision.
-     * @param {CollisionBox} tRexBox
+     * @param {CollisionBox} DinoBox
      * @param {CollisionBox} obstacleBox
      * @return {boolean} Whether the boxes intersected.
      */
-    function boxCompare(tRexBox, obstacleBox) {
+    function boxCompare(DinoBox, obstacleBox) {
         var crashed = false;
-        var tRexBoxX = tRexBox.x;
-        var tRexBoxY = tRexBox.y;
+        var DinoBoxX = DinoBox.x;
+        var DinoBoxY = DinoBox.y;
 
         var obstacleBoxX = obstacleBox.x;
         var obstacleBoxY = obstacleBox.y;
 
         // Axis-Aligned Bounding Box method.
-        if (tRexBox.x < obstacleBoxX + obstacleBox.width &&
-            tRexBox.x + tRexBox.width > obstacleBoxX &&
-            tRexBox.y < obstacleBox.y + obstacleBox.height &&
-            tRexBox.height + tRexBox.y > obstacleBox.y) {
+        if (DinoBox.x < obstacleBoxX + obstacleBox.width &&
+            DinoBox.x + DinoBox.width > obstacleBoxX &&
+            DinoBox.y < obstacleBox.y + obstacleBox.height &&
+            DinoBox.height + DinoBox.y > obstacleBox.y) {
             crashed = true;
         }
 
@@ -1524,7 +1524,7 @@
      * @param {Object} spritePos Positioning within image sprite.
      * @constructor
      */
-    function Trex(canvas, spritePos) {
+    function Dino(canvas, spritePos) {
         this.canvas = canvas;
         this.canvasCtx = canvas.getContext('2d');
         this.spritePos = spritePos;
@@ -1539,9 +1539,9 @@
         this.animStartTime = 0;
         this.timer = 0;
         this.msPerFrame = 1000 / FPS;
-        this.config = Trex.config;
+        this.config = Dino.config;
         // Current status.
-        this.status = Trex.status.WAITING;
+        this.status = Dino.status.WAITING;
 
         this.jumping = false;
         this.ducking = false;
@@ -1559,7 +1559,7 @@
      * T-rex player config.
      * @enum {number}
      */
-    Trex.config = {
+    Dino.config = {
         DROP_VELOCITY: -5,
         GRAVITY: 0.6,
         HEIGHT: 47,
@@ -1580,7 +1580,7 @@
      * Used in collision detection.
      * @type {Array<CollisionBox>}
      */
-    Trex.collisionBoxes = {
+    Dino.collisionBoxes = {
         DUCKING: [
             new CollisionBox(1, 18, 55, 25)
         ],
@@ -1599,7 +1599,7 @@
      * Animation states.
      * @enum {string}
      */
-    Trex.status = {
+    Dino.status = {
         CRASHED: 'CRASHED',
         DUCKING: 'DUCKING',
         JUMPING: 'JUMPING',
@@ -1611,14 +1611,14 @@
      * Blinking coefficient.
      * @const
      */
-    Trex.BLINK_TIMING = 7000;
+    Dino.BLINK_TIMING = 7000;
 
 
     /**
      * Animation config for different states.
      * @enum {Object}
      */
-    Trex.animFrames = {
+    Dino.animFrames = {
         WAITING: {
             frames: [44, 0],
             msPerFrame: 1000 / 3
@@ -1642,7 +1642,7 @@
     };
 
 
-    Trex.prototype = {
+    Dino.prototype = {
         /**
          * T-rex player initaliser.
          * Sets the t-rex to blink at random intervals.
@@ -1654,7 +1654,7 @@
             this.minJumpHeight = this.groundYPos - this.config.MIN_JUMP_HEIGHT;
 
             this.draw(0, 0);
-            this.update(0, Trex.status.WAITING);
+            this.update(0, Dino.status.WAITING);
         },
 
         /**
@@ -1669,7 +1669,7 @@
         /**
          * Set the animation status.
          * @param {!number} deltaTime
-         * @param {Trex.status} status Optional status to switch to.
+         * @param {Dino.status} status Optional status to switch to.
          */
         update: function (deltaTime, opt_status) {
             this.timer += deltaTime;
@@ -1678,10 +1678,10 @@
             if (opt_status) {
                 this.status = opt_status;
                 this.currentFrame = 0;
-                this.msPerFrame = Trex.animFrames[opt_status].msPerFrame;
-                this.currentAnimFrames = Trex.animFrames[opt_status].frames;
+                this.msPerFrame = Dino.animFrames[opt_status].msPerFrame;
+                this.currentAnimFrames = Dino.animFrames[opt_status].frames;
 
-                if (opt_status == Trex.status.WAITING) {
+                if (opt_status == Dino.status.WAITING) {
                     this.animStartTime = getTimeStamp();
                     this.setBlinkDelay();
                 }
@@ -1693,7 +1693,7 @@
                     this.config.INTRO_DURATION) * deltaTime);
             }
 
-            if (this.status == Trex.status.WAITING) {
+            if (this.status == Dino.status.WAITING) {
                 this.blink(getTimeStamp());
             } else {
                 this.draw(this.currentAnimFrames[this.currentFrame], 0);
@@ -1721,7 +1721,7 @@
         draw: function (x, y) {
             var sourceX = x;
             var sourceY = y;
-            var sourceWidth = this.ducking && this.status != Trex.status.CRASHED ?
+            var sourceWidth = this.ducking && this.status != Dino.status.CRASHED ?
                 this.config.WIDTH_DUCK : this.config.WIDTH;
             var sourceHeight = this.config.HEIGHT;
 
@@ -1737,14 +1737,14 @@
             sourceY += this.spritePos.y;
 
             // Ducking.
-            if (this.ducking && this.status != Trex.status.CRASHED) {
+            if (this.ducking && this.status != Dino.status.CRASHED) {
                 this.canvasCtx.drawImage(Runner.imageSprite, sourceX, sourceY,
                     sourceWidth, sourceHeight,
                     this.xPos, this.yPos,
                     this.config.WIDTH_DUCK, this.config.HEIGHT);
             } else {
-                // Crashed whilst ducking. Trex is standing up so needs adjustment.
-                if (this.ducking && this.status == Trex.status.CRASHED) {
+                // Crashed whilst ducking. Dino is standing up so needs adjustment.
+                if (this.ducking && this.status == Dino.status.CRASHED) {
                     this.xPos++;
                 }
                 // Standing / running
@@ -1759,7 +1759,7 @@
          * Sets a random time for the blink to happen.
          */
         setBlinkDelay: function () {
-            this.blinkDelay = Math.ceil(Math.random() * Trex.BLINK_TIMING);
+            this.blinkDelay = Math.ceil(Math.random() * Dino.BLINK_TIMING);
         },
 
         /**
@@ -1787,7 +1787,7 @@
          */
         startJump: function (speed) {
             if (!this.jumping) {
-                this.update(0, Trex.status.JUMPING);
+                this.update(0, Dino.status.JUMPING);
                 // Tweak the jump velocity based on the speed.
                 this.jumpVelocity = this.config.INIITAL_JUMP_VELOCITY - (speed / 10);
                 this.jumping = true;
@@ -1812,10 +1812,10 @@
          * @param {number} speed
          */
         updateJump: function (deltaTime, speed) {
-            var msPerFrame = Trex.animFrames[this.status].msPerFrame;
+            var msPerFrame = Dino.animFrames[this.status].msPerFrame;
             var framesElapsed = deltaTime / msPerFrame;
 
-            // Speed drop makes Trex fall faster.
+            // Speed drop makes Dino fall faster.
             if (this.speedDrop) {
                 this.yPos += Math.round(this.jumpVelocity *
                     this.config.SPEED_DROP_COEFFICIENT * framesElapsed);
@@ -1856,11 +1856,11 @@
          * @param {boolean} isDucking.
          */
         setDuck: function (isDucking) {
-            if (isDucking && this.status != Trex.status.DUCKING) {
-                this.update(0, Trex.status.DUCKING);
+            if (isDucking && this.status != Dino.status.DUCKING) {
+                this.update(0, Dino.status.DUCKING);
                 this.ducking = true;
-            } else if (this.status == Trex.status.DUCKING) {
-                this.update(0, Trex.status.RUNNING);
+            } else if (this.status == Dino.status.DUCKING) {
+                this.update(0, Dino.status.RUNNING);
                 this.ducking = false;
             }
         },
@@ -1873,7 +1873,7 @@
             this.jumpVelocity = 0;
             this.jumping = false;
             this.ducking = false;
-            this.update(0, Trex.status.RUNNING);
+            this.update(0, Dino.status.RUNNING);
             this.midair = false;
             this.speedDrop = false;
             this.jumpCount = 0;
