@@ -6,4 +6,4 @@ The Chrome Dino game
 
 ![chrome offline game cast](assets/screenshot.gif)
 ------------------------------------------------------------
-## Made by Abhiram Sharma
+### Made by Abhiram Sharma
